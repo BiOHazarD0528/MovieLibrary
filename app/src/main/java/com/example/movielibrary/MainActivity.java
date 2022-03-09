@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void confirmTitle(View view) {
-        EditText editText = findViewById(R.id.TitleTextBox);
+        EditText editText = findViewById(R.id.titleTextBox);
         String title = editText.getText().toString();
         showToast(title);
     }
@@ -30,21 +30,21 @@ public class MainActivity extends AppCompatActivity {
     public void doubleCost(View view) {
         EditText costText = findViewById(R.id.costTextBox);
         int cost = Integer.parseInt(costText.getText().toString());
-        costText.setText(cost * 2 + "");
+        costText.setText(String.valueOf(cost * 2));
     }
 
     public void clearAll(View view) {
-        EditText title = findViewById(R.id.TitleTextBox);
+        EditText title = findViewById(R.id.titleTextBox);
         EditText year = findViewById(R.id.yearTextBox);
-        EditText country = findViewById(R.id.CountryTextBox);
-        EditText genre = findViewById(R.id.GenreTextBox);
+        EditText country = findViewById(R.id.countryTextBox);
+        EditText genre = findViewById(R.id.genreTextBox);
         EditText cost = findViewById(R.id.costTextBox);
-        EditText keyword = findViewById(R.id.KeywordTextBox);
-        title.getText().clear();
-        year.getText().clear();
-        country.getText().clear();
-        genre.getText().clear();
-        cost.getText().clear();
-        keyword.getText().clear();
+        EditText keyword = findViewById(R.id.keywordsTextBox);
+        title.setText("");
+        year.setText("");
+        country.setText("");
+        genre.setText("");
+        cost.setText("");
+        keyword.setText("");
     }
 }
