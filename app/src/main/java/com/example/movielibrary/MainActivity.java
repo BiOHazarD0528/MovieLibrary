@@ -1,11 +1,15 @@
 package com.example.movielibrary;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,10 +19,76 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void confirmTitle(View view) {
-        EditText editText = findViewById(R.id.titleTextBox);
-        String title = editText.getText().toString();
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences data = getSharedPreferences("movieData", 0);
+        String title = data.getString("title", "");
+        String year = data.getString("year", "");
+        String country = data.getString("country", "");
+        String genre = data.getString("genre", "");
+        String cost = data.getString("cost", "");
+        String keyword = data.getString("keyword", "");
+
+        EditText titleText = findViewById(R.id.titleTextBox);
+        EditText yearText = findViewById(R.id.yearTextBox);
+        EditText countryText = findViewById(R.id.countryTextBox);
+        EditText genreText = findViewById(R.id.genreTextBox);
+        EditText costText = findViewById(R.id.costTextBox);
+        EditText keywordText = findViewById(R.id.keywordsTextBox);
+
+        titleText.setText(title);
+        yearText.setText(year);
+        countryText.setText(country);
+        genreText.setText(genre);
+        costText.setText(cost);
+        keywordText.setText(keyword);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        EditText genre = findViewById(R.id.genreTextBox);
+        String lowerCaseGenre = genre.getText().toString().toLowerCase();
+        outState.putString("genre", lowerCaseGenre);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        EditText title = findViewById(R.id.titleTextBox);
+        EditText genre = findViewById(R.id.genreTextBox);
+        title.setText(title.getText().toString().toUpperCase());
+        genre.setText(savedInstanceState.getString("genre"));
+    }
+
+    public void addMovie(View view) {
+        EditText titleText = findViewById(R.id.titleTextBox);
+        EditText yearText = findViewById(R.id.yearTextBox);
+        EditText countryText = findViewById(R.id.countryTextBox);
+        EditText genreText = findViewById(R.id.genreTextBox);
+        EditText costText = findViewById(R.id.costTextBox);
+        EditText keywordText = findViewById(R.id.keywordsTextBox);
+
+        String title = titleText.getText().toString();
+        String year = yearText.getText().toString();
+        String country = countryText.getText().toString();
+        String genre = genreText.getText().toString();
+        String cost = costText.getText().toString();
+        String keyword = keywordText.getText().toString();
         showToast(title);
+
+        SharedPreferences data = getSharedPreferences("movieData", 0);
+        SharedPreferences.Editor editor = data.edit();
+        editor.putString("title", title);
+        editor.putString("year", year);
+        editor.putString("country", country);
+        editor.putString("genre", genre);
+        editor.putString("cost", cost);
+        editor.putString("keyword", keyword);
+
+        editor.commit();
     }
 
     public void showToast(String title) {
