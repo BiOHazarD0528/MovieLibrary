@@ -24,12 +24,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         SharedPreferences data = getSharedPreferences("movieData", 0);
-        String title = data.getString("title", "");
-        String year = data.getString("year", "");
-        String country = data.getString("country", "");
-        String genre = data.getString("genre", "");
-        String cost = data.getString("cost", "");
-        String keyword = data.getString("keyword", "");
 
         EditText titleText = findViewById(R.id.titleTextBox);
         EditText yearText = findViewById(R.id.yearTextBox);
@@ -38,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
         EditText costText = findViewById(R.id.costTextBox);
         EditText keywordText = findViewById(R.id.keywordsTextBox);
 
-        titleText.setText(title);
-        yearText.setText(year);
-        countryText.setText(country);
-        genreText.setText(genre);
-        costText.setText(cost);
-        keywordText.setText(keyword);
+        titleText.setText(data.getString("title", ""));
+        yearText.setText(data.getString("year", ""));
+        countryText.setText(data.getString("country", ""));
+        genreText.setText(data.getString("genre", ""));
+        costText.setText(data.getString("cost", ""));
+        keywordText.setText(data.getString("keyword", ""));
     }
 
     @Override
@@ -88,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("cost", cost);
         editor.putString("keyword", keyword);
 
-        editor.commit();
+        editor.apply();
     }
 
     public void showToast(String title) {
