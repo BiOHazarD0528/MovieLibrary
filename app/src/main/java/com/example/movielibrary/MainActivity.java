@@ -111,4 +111,20 @@ public class MainActivity extends AppCompatActivity {
         cost.setText("");
         keyword.setText("");
     }
+
+    public void clearSP(View view) {
+        SharedPreferences data = getSharedPreferences("movieData", 0);
+        SharedPreferences.Editor editor = data.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    public void loadX2(View view) {
+        doubleCost(view);
+        SharedPreferences data = getSharedPreferences("movieData", 0);
+        int cost = Integer.parseInt(data.getString("cost", "")) * 2;
+        SharedPreferences.Editor editor = data.edit();
+        editor.putString("cost", String.valueOf(cost));
+        editor.apply();
+    }
 }
