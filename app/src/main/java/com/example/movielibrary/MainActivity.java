@@ -2,22 +2,66 @@ package com.example.movielibrary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Locale;
+import java.util.StringTokenizer;
+
 
 public class MainActivity extends AppCompatActivity {
+
+    EditText titleText, yearText, countryText, genreText, costText, keywordText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        titleText = findViewById(R.id.titleTextBox);
+        yearText = findViewById(R.id.yearTextBox);
+        countryText = findViewById(R.id.countryTextBox);
+        genreText = findViewById(R.id.genreTextBox);
+        costText = findViewById(R.id.costTextBox);
+        keywordText = findViewById(R.id.keywordsTextBox);
+
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS}, 0);
+
+        registerReceiver(myBroadcastReceiver, new IntentFilter(SMSReceiver.SMS_FILTER));
     }
+
+    BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String msg = intent.getStringExtra(SMSReceiver.SMS_MSG_KEY);
+
+            StringTokenizer stringTokenizer = new StringTokenizer(msg, ";");
+            String title = stringTokenizer.nextToken();
+            String year = stringTokenizer.nextToken();
+            String country = stringTokenizer.nextToken();
+            String genre = stringTokenizer.nextToken();
+            String cost = stringTokenizer.nextToken();
+            String keywords = stringTokenizer.nextToken();
+
+            titleText.setText(title);
+            yearText.setText(year);
+            countryText.setText(country);
+            genreText.setText(genre);
+            costText.setText(cost);
+            keywordText.setText(keywords);
+        }
+    };
 
     @Override
     protected void onStart() {
