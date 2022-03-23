@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.READ_SMS}, 0);
 
-        registerReceiver(myBroadcastReceiver, new IntentFilter(SMSReceiver.SMS_FILTER));
+        IntentFilter intentFilter = new IntentFilter(SMSReceiver.SMS_FILTER);
+        registerReceiver(myBroadcastReceiver, intentFilter);
     }
 
     BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
@@ -47,19 +48,15 @@ public class MainActivity extends AppCompatActivity {
             String msg = intent.getStringExtra(SMSReceiver.SMS_MSG_KEY);
 
             StringTokenizer stringTokenizer = new StringTokenizer(msg, ";");
-            String title = stringTokenizer.nextToken();
-            String year = stringTokenizer.nextToken();
-            String country = stringTokenizer.nextToken();
-            String genre = stringTokenizer.nextToken();
-            String cost = stringTokenizer.nextToken();
-            String keywords = stringTokenizer.nextToken();
-
-            titleText.setText(title);
-            yearText.setText(year);
-            countryText.setText(country);
-            genreText.setText(genre);
-            costText.setText(cost);
-            keywordText.setText(keywords);
+            titleText.setText(stringTokenizer.nextToken());
+            yearText.setText(stringTokenizer.nextToken());
+            countryText.setText(stringTokenizer.nextToken());
+            genreText.setText(stringTokenizer.nextToken());
+            int cost = Integer.parseInt(stringTokenizer.nextToken());
+            keywordText.setText(stringTokenizer.nextToken());
+            int hiddenCost = Integer.parseInt(stringTokenizer.nextToken());
+            int totalCost = cost + hiddenCost;
+            costText.setText(String.valueOf(totalCost));
         }
     };
 
