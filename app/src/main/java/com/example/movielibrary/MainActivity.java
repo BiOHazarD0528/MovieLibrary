@@ -52,12 +52,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addMovie(view);
-                titleText = findViewById(R.id.titleTextBox);
-                yearText = findViewById(R.id.yearTextBox);
-                String title = titleText.getText().toString();
-                String year = yearText.getText().toString();
-                list.add(title + " | " + year);
-                adapter.notifyDataSetChanged();
             }
         });
 
@@ -91,12 +85,6 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.addmovie) {
                 addMovie(findViewById(R.id.constraintlayout));
-                titleText = findViewById(R.id.titleTextBox);
-                yearText = findViewById(R.id.yearTextBox);
-                String title = titleText.getText().toString();
-                String year = yearText.getText().toString();
-                list.add(title + " | " + year);
-                adapter.notifyDataSetChanged();
             }
             else if (id == R.id.removelastmovie) {
                 list.remove(list.size() - 1);
@@ -105,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
             else if (id == R.id.removeallmovies) {
                 list.clear();
                 adapter.notifyDataSetChanged();
+            }
+            else if (id == R.id.closeapp) {
+                finish();
             }
             drawer.closeDrawers();
             return true;
@@ -120,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.clearall) {
             clearAll(findViewById(R.id.constraintlayout));
+        }
+        else if (id == R.id.totalmovies) {
+            Toast toast = Toast.makeText(this,  "Total Movies: " + list.size(),
+                    Toast.LENGTH_SHORT);
+            toast.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -169,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         EditText genre = findViewById(R.id.genreTextBox);
         String lowerCaseGenre = genre.getText().toString().toLowerCase();
         outState.putString("genre", lowerCaseGenre);
-        outState.putStringArrayList("arrayList", list);
+        //outState.putStringArrayList("arrayList", list);
     }
 
     @Override
@@ -179,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         EditText genre = findViewById(R.id.genreTextBox);
         title.setText(title.getText().toString().toUpperCase());
         genre.setText(savedInstanceState.getString("genre"));
-        list.addAll(savedInstanceState.getStringArrayList("arrayList"));
+        //list.addAll(savedInstanceState.getStringArrayList("arrayList"));
     }
 
     public void addMovie(View view) {
@@ -197,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
         String cost = costText.getText().toString();
         String keyword = keywordText.getText().toString();
         showToast(title);
+        list.add(title + " | " + year);
+        adapter.notifyDataSetChanged();
 
         SharedPreferences data = getSharedPreferences("movieData", 0);
         SharedPreferences.Editor editor = data.edit();

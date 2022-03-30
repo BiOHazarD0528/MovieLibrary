@@ -5,4 +5,7 @@
     <item
         android:id="@+id/clearall"
         android:title="Clear Fields" />
+    <item
+        android:id="@+id/totalmovies"
+        android:title="Total Movies" />
 </menu>
