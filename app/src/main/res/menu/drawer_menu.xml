@@ -11,6 +11,9 @@
         android:id="@+id/removeallmovies"
         android:title="Remove All Movies" />
     <item
+        android:id="@+id/listmovies"
+        android:title="List All Movies" />
+    <item
         android:id="@+id/closeapp"
         android:title="Close" />
 </menu>

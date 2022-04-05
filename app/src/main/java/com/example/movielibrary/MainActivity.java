@@ -24,6 +24,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText titleText, yearText, countryText, genreText, costText, keywordText;
     ArrayList<String> list = new ArrayList<>();
+    ArrayList<String[]> movieData = new ArrayList<>();
     ArrayAdapter adapter;
     DrawerLayout drawer;
 
@@ -93,6 +95,18 @@ public class MainActivity extends AppCompatActivity {
             else if (id == R.id.removeallmovies) {
                 list.clear();
                 adapter.notifyDataSetChanged();
+            }
+            else if (id == R.id.listmovies) {
+                Gson gson = new Gson();
+                String dbStr = gson.toJson(movieData);
+
+                SharedPreferences sharedPreferences = getSharedPreferences("movieData", 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("json", dbStr);
+                editor.apply();
+
+                Intent intent = new Intent(getApplicationContext(), ListAllMovies.class);
+                startActivity(intent);
             }
             else if (id == R.id.closeapp) {
                 finish();
@@ -195,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
         showToast(title);
         list.add(title + " | " + year);
         adapter.notifyDataSetChanged();
+        String[] dataArray = {title, year, country, genre, cost, keyword};
+        movieData.add(dataArray);
 
         SharedPreferences data = getSharedPreferences("movieData", 0);
         SharedPreferences.Editor editor = data.edit();
