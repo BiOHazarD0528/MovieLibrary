@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -38,5 +40,13 @@ public class ListAllMovies extends AppCompatActivity {
 
         adapter = new RecyclerViewAdapter(movieData);
         recyclerView.setAdapter(adapter);
+
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }
