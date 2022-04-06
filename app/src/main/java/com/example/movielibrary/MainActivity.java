@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText titleText, yearText, countryText, genreText, costText, keywordText;
     ArrayList<String> list = new ArrayList<>();
-    ArrayList<String[]> movieData = new ArrayList<>();
+    ArrayList<MovieData> movieData = new ArrayList<>();
     ArrayAdapter adapter;
     DrawerLayout drawer;
 
@@ -209,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
         showToast(title);
         list.add(title + " | " + year);
         adapter.notifyDataSetChanged();
-        String[] dataArray = {title, year, country, genre, cost, keyword};
-        movieData.add(dataArray);
+        MovieData movie = new MovieData(title, year, country, genre, cost, keyword);
+        this.movieData.add(movie);
 
         SharedPreferences data = getSharedPreferences("movieData", 0);
         SharedPreferences.Editor editor = data.edit();

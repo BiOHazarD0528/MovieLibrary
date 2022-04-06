@@ -1,9 +1,6 @@
 package com.example.movielibrary;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +18,7 @@ public class ListAllMovies extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     RecyclerView.Adapter adapter;
 
-    ArrayList<String[]> movieData;
+    ArrayList<MovieData> movieData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +27,7 @@ public class ListAllMovies extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("movieData", 0);
         String dbStr = sharedPreferences.getString("json", "");
-        Type type = new TypeToken<ArrayList<String[]>>() {}.getType();
+        Type type = new TypeToken<ArrayList<MovieData>>() {}.getType();
         Gson gson = new Gson();
         movieData = gson.fromJson(dbStr, type);
 

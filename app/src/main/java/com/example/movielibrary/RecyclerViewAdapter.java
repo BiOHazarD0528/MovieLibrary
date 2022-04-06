@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    ArrayList<String[]> movieData;
+    ArrayList<MovieData> movieData;
 
-    public RecyclerViewAdapter(ArrayList<String[]> movieData) {
+    public RecyclerViewAdapter(ArrayList<MovieData> movieData) {
         this.movieData = movieData;
     }
 
@@ -27,18 +27,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int i = 0;
-        holder.titleText.setText(movieData.get(position)[i]);
-        i++;
-        holder.yearText.setText(movieData.get(position)[i]);
-        i++;
-        holder.countryText.setText(movieData.get(position)[i]);
-        i++;
-        holder.genreText.setText(movieData.get(position)[i]);
-        i++;
-        holder.costText.setText(movieData.get(position)[i]);
-        i++;
-        holder.keywordsText.setText(movieData.get(position)[i]);
+        holder.titleText.setText(movieData.get(position).getTitle());
+        holder.yearText.setText(movieData.get(position).getYear());
+        holder.countryText.setText(movieData.get(position).getCountry());
+        holder.genreText.setText(movieData.get(position).getGenre());
+        holder.costText.setText(movieData.get(position).getCost());
+        holder.keywordsText.setText(movieData.get(position).getKeywords());
     }
 
     @Override
