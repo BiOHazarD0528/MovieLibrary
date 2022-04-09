@@ -9,13 +9,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movielibrary.provider.MovieData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    ArrayList<MovieData> movieData;
+    List<MovieData> movieData = new ArrayList<>();
 
-    public RecyclerViewAdapter(ArrayList<MovieData> movieData) {
+    public void setMovieData(List<MovieData> movieData) {
         this.movieData = movieData;
+    }
+
+    public RecyclerViewAdapter() {
     }
 
     @NonNull

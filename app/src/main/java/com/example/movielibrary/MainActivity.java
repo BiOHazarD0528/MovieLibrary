@@ -21,7 +21,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.movielibrary.provider.MovieData;
+import com.example.movielibrary.provider.MovieViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
@@ -34,9 +37,11 @@ public class MainActivity extends AppCompatActivity {
 
     EditText titleText, yearText, countryText, genreText, costText, keywordText;
     ArrayList<String> list = new ArrayList<>();
-    ArrayList<MovieData> movieData = new ArrayList<>();
+    //ArrayList<MovieData> movieData = new ArrayList<>();
     ArrayAdapter adapter;
     DrawerLayout drawer;
+    MovieViewModel movieViewModel;
+    RecyclerViewAdapter recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        recyclerViewAdapter = new RecyclerViewAdapter();
+        movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+        movieViewModel.getAllMovies().observe(this, newData -> {
+            recyclerViewAdapter.setMovieData(newData);
+            recyclerViewAdapter.notifyDataSetChanged();
+        });
 
         ListView listView = findViewById(R.id.listview);
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
@@ -95,15 +107,16 @@ public class MainActivity extends AppCompatActivity {
             else if (id == R.id.removeallmovies) {
                 list.clear();
                 adapter.notifyDataSetChanged();
+                movieViewModel.deleteAll();
             }
             else if (id == R.id.listmovies) {
-                Gson gson = new Gson();
-                String dbStr = gson.toJson(movieData);
-
-                SharedPreferences sharedPreferences = getSharedPreferences("movieData", 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("json", dbStr);
-                editor.apply();
+//                Gson gson = new Gson();
+//                String dbStr = gson.toJson(movieData);
+//
+//                SharedPreferences sharedPreferences = getSharedPreferences("movieData", 0);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString("json", dbStr);
+//                editor.apply();
 
                 Intent intent = new Intent(getApplicationContext(), ListAllMovies.class);
                 startActivity(intent);
@@ -210,7 +223,9 @@ public class MainActivity extends AppCompatActivity {
         list.add(title + " | " + year);
         adapter.notifyDataSetChanged();
         MovieData movie = new MovieData(title, year, country, genre, cost, keyword);
-        this.movieData.add(movie);
+        movieViewModel.insert(movie);
+
+        //this.movieData.add(movie);
 
         SharedPreferences data = getSharedPreferences("movieData", 0);
         SharedPreferences.Editor editor = data.edit();
@@ -249,6 +264,10 @@ public class MainActivity extends AppCompatActivity {
         genre.setText("");
         cost.setText("");
         keyword.setText("");
+        SharedPreferences sp = getSharedPreferences("movieData", 0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
+        editor.apply();
     }
 
     public void clearSP(View view) {
