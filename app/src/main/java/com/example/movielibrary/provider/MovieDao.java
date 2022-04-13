@@ -17,4 +17,7 @@ public interface MovieDao {
 
     @Query("delete from movieTable")
     void deleteAllMovies();
+
+    @Query("delete from movieTable where year = :movieYear")
+    void deleteMovieByYear(int movieYear);
 }

@@ -27,4 +27,8 @@ public class MovieRepository {
     void deleteAll() {
         MovieDatabase.databaseWriteExecutor.execute(() -> movieDao.deleteAllMovies());
     }
+
+    void deleteMovieByYear(int movieYear) {
+        MovieDatabase.databaseWriteExecutor.execute(() -> movieDao.deleteMovieByYear(movieYear));
+    }
 }

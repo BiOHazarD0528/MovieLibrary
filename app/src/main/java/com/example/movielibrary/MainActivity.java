@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     //ArrayList<MovieData> movieData = new ArrayList<>();
     ArrayAdapter adapter;
     DrawerLayout drawer;
-    MovieViewModel movieViewModel;
+    static MovieViewModel movieViewModel;
     RecyclerViewAdapter recyclerViewAdapter;
 
     @Override

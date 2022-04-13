@@ -29,4 +29,8 @@ public class MovieViewModel extends AndroidViewModel {
     public void deleteAll() {
         movieRepository.deleteAll();
     }
+
+    public void deleteMovieByYear(int movieYear) {
+        movieRepository.deleteMovieByYear(movieYear);
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.movielibrary;
 
+import static com.example.movielibrary.MainActivity.movieViewModel;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +46,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(v.getContext(), "Movie No." + (position+1) +
-                        " with Title:" + holder.titleText.getText() + " is selected", Toast.LENGTH_SHORT);
-                toast.show();
+//                Toast toast = Toast.makeText(v.getContext(), "Movie No." + (position+1) +
+//                        " with Title:" + holder.titleText.getText() + " is selected", Toast.LENGTH_SHORT);
+//                toast.show();
+                int year = Integer.parseInt(holder.yearText.getText().toString());
+                movieViewModel.deleteMovieByYear(year);
             }
         });
     }
