@@ -27,6 +27,8 @@ import com.example.movielibrary.provider.MovieData;
 import com.example.movielibrary.provider.MovieViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawer;
     static MovieViewModel movieViewModel;
     RecyclerViewAdapter recyclerViewAdapter;
+    DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
 
         recyclerViewAdapter = new RecyclerViewAdapter();
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
@@ -108,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 list.clear();
                 adapter.notifyDataSetChanged();
                 movieViewModel.deleteAll();
+                myRef.removeValue();
             }
             else if (id == R.id.listmovies) {
 //                Gson gson = new Gson();
@@ -224,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         MovieData movie = new MovieData(title, year, country, genre, cost, keyword);
         movieViewModel.insert(movie);
+        myRef.push().setValue(movie);
 
         //this.movieData.add(movie);
 
