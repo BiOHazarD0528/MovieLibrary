@@ -14,10 +14,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     static MovieViewModel movieViewModel;
     RecyclerViewAdapter recyclerViewAdapter;
     DatabaseReference myRef;
+    View myFrame;
+    int x_down;
+    int y_down;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,56 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        myFrame = findViewById(R.id.frameLayout);
+
+        myFrame.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getActionMasked();
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        x_down = (int) event.getX();
+                        y_down = (int) event.getY();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        if (Math.abs(x_down - event.getX()) < 40) {
+                            if (y_down - event.getY() < 0) {
+                                clearAll(v);
+                            }
+                        }
+                        else if (Math.abs(y_down - event.getY()) < 40) {
+                            if (x_down - event.getX() < 0) {
+                                addMovie(v);
+                            }
+                        }
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+//        myView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                int action = event.getActionMasked();
+//
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                    case MotionEvent.ACTION_MOVE:
+//                        v.setNestedScrollingEnabled(false);
+//                        return true;
+//                    case MotionEvent.ACTION_UP:
+//                        v.setNestedScrollingEnabled(true);
+//                        return true;
+//                    default:
+//                        return false;
+//                }
+//            }
+//        });
+
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
