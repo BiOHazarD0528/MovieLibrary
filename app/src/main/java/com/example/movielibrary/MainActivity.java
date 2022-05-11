@@ -71,7 +71,21 @@ public class MainActivity extends AppCompatActivity {
                         y_down = (int) event.getY();
                         return true;
                     case MotionEvent.ACTION_UP:
-                        if (Math.abs(x_down - event.getX()) < 40) {
+                        if (x_down >= myFrame.getWidth()-100 && x_down <= myFrame.getWidth()
+                                && y_down >= 0 && y_down <= 100) {
+                            EditText cost = findViewById(R.id.costTextBox);
+                            int newCost = Integer.parseInt(cost.getText().toString()) + 50;
+                            cost.setText(String.valueOf(newCost));
+                        }
+                        else if (x_down >= 0 && x_down <= 100 && y_down >= 0 && y_down <= 100) {
+                            EditText cost = findViewById(R.id.costTextBox);
+                            int newCost = Integer.parseInt(cost.getText().toString()) - 50;
+                            if (newCost < 0) {
+                                newCost = 0;
+                            }
+                            cost.setText(String.valueOf(newCost));
+                        }
+                        else if (Math.abs(x_down - event.getX()) < 40) {
                             if (y_down - event.getY() < 0) {
                                 clearAll(v);
                             }
@@ -87,25 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-//        myView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                int action = event.getActionMasked();
-//
-//                switch (action) {
-//                    case MotionEvent.ACTION_DOWN:
-//                    case MotionEvent.ACTION_MOVE:
-//                        v.setNestedScrollingEnabled(false);
-//                        return true;
-//                    case MotionEvent.ACTION_UP:
-//                        v.setNestedScrollingEnabled(true);
-//                        return true;
-//                    default:
-//                        return false;
-//                }
-//            }
-//        });
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
