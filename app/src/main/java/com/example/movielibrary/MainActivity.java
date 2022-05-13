@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     View myFrame;
     int x_down;
     int y_down;
+    GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,49 +62,51 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         myFrame = findViewById(R.id.frameLayout);
+        gestureDetector = new GestureDetector(this, new MyGestureDetector());
 
         myFrame.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getActionMasked();
-
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        x_down = (int) event.getX();
-                        y_down = (int) event.getY();
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        if (x_down >= myFrame.getWidth()-100 && x_down <= myFrame.getWidth()
-                                && y_down >= 0 && y_down <= 100) {
-                            EditText cost = findViewById(R.id.costTextBox);
-                            int newCost = Integer.parseInt(cost.getText().toString()) + 50;
-                            cost.setText(String.valueOf(newCost));
-                        }
-                        else if (x_down >= 0 && x_down <= 100 && y_down >= 0 && y_down <= 100) {
-                            EditText cost = findViewById(R.id.costTextBox);
-                            int newCost = Integer.parseInt(cost.getText().toString()) - 50;
-                            if (newCost < 0) {
-                                newCost = 0;
-                            }
-                            cost.setText(String.valueOf(newCost));
-                        }
-                        else if (Math.abs(x_down - event.getX()) < 40) {
-                            if (y_down - event.getY() < 0) {
-                                clearAll(v);
-                            }
-                        }
-                        else if (Math.abs(y_down - event.getY()) < 40) {
-                            if (x_down - event.getX() < 0) {
-                                addMovie(v);
-                            }
-                        }
-                        return true;
-                    default:
-                        return false;
-                }
+                gestureDetector.onTouchEvent(event);
+                return true;
+//                int action = event.getActionMasked();
+//
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        x_down = (int) event.getX();
+//                        y_down = (int) event.getY();
+//                        return true;
+//                    case MotionEvent.ACTION_UP:
+//                        if (x_down >= myFrame.getWidth()-100 && x_down <= myFrame.getWidth()
+//                                && y_down >= 0 && y_down <= 100) {
+//                            EditText cost = findViewById(R.id.costTextBox);
+//                            int newCost = Integer.parseInt(cost.getText().toString()) + 50;
+//                            cost.setText(String.valueOf(newCost));
+//                        }
+//                        else if (x_down >= 0 && x_down <= 100 && y_down >= 0 && y_down <= 100) {
+//                            EditText cost = findViewById(R.id.costTextBox);
+//                            int newCost = Integer.parseInt(cost.getText().toString()) - 50;
+//                            if (newCost < 0) {
+//                                newCost = 0;
+//                            }
+//                            cost.setText(String.valueOf(newCost));
+//                        }
+//                        else if (Math.abs(x_down - event.getX()) < 40) {
+//                            if (y_down - event.getY() < 0) {
+//                                clearAll(v);
+//                            }
+//                        }
+//                        else if (Math.abs(y_down - event.getY()) < 40) {
+//                            if (x_down - event.getX() < 0) {
+//                                addMovie(v);
+//                            }
+//                        }
+//                        return true;
+//                    default:
+//                        return false;
+//                }
             }
         });
-
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
@@ -147,6 +152,64 @@ public class MainActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter(SMSReceiver.SMS_FILTER);
         registerReceiver(myBroadcastReceiver, intentFilter);
+    }
+
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            titleText = findViewById(R.id.titleTextBox);
+            yearText = findViewById(R.id.yearTextBox);
+            countryText = findViewById(R.id.countryTextBox);
+            genreText = findViewById(R.id.genreTextBox);
+            costText = findViewById(R.id.costTextBox);
+            keywordText = findViewById(R.id.keywordsTextBox);
+
+            titleText.setText("Batman");
+            yearText.setText("2022");
+            countryText.setText("USA");
+            genreText.setText("Action");
+            costText.setText("30");
+            keywordText.setText("KEY1");
+
+            return super.onDoubleTap(e);
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            costText = findViewById(R.id.costTextBox);
+            int newCost = Integer.parseInt(costText.getText().toString()) + 150;
+            costText.setText(String.valueOf(newCost));
+            return super.onSingleTapConfirmed(e);
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            yearText = findViewById(R.id.yearTextBox);
+            int newYear;
+            if (!yearText.getText().toString().equals("")) {
+                if (distanceX > 0) {
+                    newYear = Integer.parseInt(yearText.getText().toString()) - (int) distanceX;
+                }
+                else {
+                    newYear = Integer.parseInt(yearText.getText().toString()) + Math.abs((int) distanceX);
+                }
+                yearText.setText(String.valueOf(newYear));
+            }
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            moveTaskToBack(true);
+            return super.onFling(e1, e2, velocityX, velocityY);
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            View constraintLayout = findViewById(R.id.constraintlayout);
+            clearAll(constraintLayout);
+            super.onLongPress(e);
+        }
     }
 
     class NavigationListener implements NavigationView.OnNavigationItemSelectedListener {
