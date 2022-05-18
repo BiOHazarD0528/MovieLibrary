@@ -3,6 +3,7 @@ package com.example.movielibrary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -12,16 +13,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -33,7 +33,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -49,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
     static MovieViewModel movieViewModel;
     RecyclerViewAdapter recyclerViewAdapter;
     DatabaseReference myRef;
+    View myConstraintLayout;
     View myFrame;
     int x_down;
     int y_down;
     GestureDetector gestureDetector;
+    ScaleGestureDetector scaleGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +62,26 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // myConstraintLayout = findViewById(R.id.constraintLayout);
+        View drawerLayout = findViewById(R.id.drawerlayout);
         myFrame = findViewById(R.id.frameLayout);
+
         gestureDetector = new GestureDetector(this, new MyGestureDetector());
+        scaleGestureDetector = new ScaleGestureDetector(this, new MyScaleGestureDetector());
+
+        drawerLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                scaleGestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
 
         myFrame.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
+                // scaleGestureDetector.onTouchEvent(event);
                 return true;
 //                int action = event.getActionMasked();
 //
@@ -107,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
 //                }
             }
         });
+
+
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
@@ -184,6 +200,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (distanceX < 40 && Math.abs(distanceY) > 40) {
+                keywordText = findViewById(R.id.keywordsTextBox);
+                String uppercase = keywordText.getText().toString().toUpperCase();
+                keywordText.setText(uppercase);
+            }
             yearText = findViewById(R.id.yearTextBox);
             int newYear;
             if (!yearText.getText().toString().equals("")) {
@@ -200,15 +221,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            moveTaskToBack(true);
+            if (velocityX > 200 || velocityY > 200) {
+                moveTaskToBack(true);
+            }
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
         @Override
         public void onLongPress(MotionEvent e) {
-            View constraintLayout = findViewById(R.id.constraintlayout);
-            clearAll(constraintLayout);
+            clearAll(myConstraintLayout);
             super.onLongPress(e);
+        }
+    }
+
+    class MyScaleGestureDetector extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            keywordText = findViewById(R.id.keywordsTextBox);
+            String lowerCase = keywordText.getText().toString().toLowerCase();
+            keywordText.setText(lowerCase);
+            return super.onScale(detector);
         }
     }
 
@@ -217,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
             if (id == R.id.addmovie) {
-                addMovie(findViewById(R.id.constraintlayout));
+                addMovie(findViewById(R.id.constraintLayout));
             }
             else if (id == R.id.removelastmovie) {
                 list.remove(list.size() - 1);
@@ -257,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.clearall) {
-            clearAll(findViewById(R.id.constraintlayout));
+            clearAll(findViewById(R.id.constraintLayout));
         }
         else if (id == R.id.totalmovies) {
             Toast toast = Toast.makeText(this,  "Total Movies: " + list.size(),
