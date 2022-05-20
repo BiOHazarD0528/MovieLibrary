@@ -14,11 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieLibrary">
+        <activity
+            android:name=".Login"
+            android:exported="false" />
+        <activity
+            android:name=".SignUp"
+            android:exported="false" />
+
         <provider
             android:name=".provider.MovieContentProvider"
             android:authorities="fit2081.app.SHIN_HERH"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
+        <provider
+            android:name=".login_provider.LoginContentProvider"
+            android:authorities="fit2081.app.LOGIN"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".ListAllMovies"

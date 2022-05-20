@@ -1,6 +1,7 @@
 package com.example.movielibrary;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,11 +23,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.movielibrary.login_provider.LoginViewModel;
 import com.example.movielibrary.provider.MovieData;
 import com.example.movielibrary.provider.MovieViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter adapter;
     DrawerLayout drawer;
     static MovieViewModel movieViewModel;
+    static LoginViewModel loginViewModel;
     RecyclerViewAdapter recyclerViewAdapter;
     DatabaseReference myRef;
     View myConstraintLayout;
@@ -61,6 +65,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+//        String emailName = "";
+//        boolean success = true;
+//        try {
+//            emailName = savedInstanceState.getString("email");
+//        }
+//        catch (NullPointerException e) {
+//            success = false;
+//        }
+//
+//        if (success) {
+//            TextView user = findViewById(R.id.textView7);
+//            user.setText(emailName);
+//        }
 
         // myConstraintLayout = findViewById(R.id.constraintLayout);
         View drawerLayout = findViewById(R.id.drawerlayout);
@@ -122,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
 
@@ -133,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
             recyclerViewAdapter.setMovieData(newData);
             recyclerViewAdapter.notifyDataSetChanged();
         });
+
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
         ListView listView = findViewById(R.id.listview);
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
@@ -242,6 +260,34 @@ public class MainActivity extends AppCompatActivity {
             keywordText.setText(lowerCase);
             return super.onScale(detector);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = getSharedPreferences("email", 0);
+        String header = sharedPreferences.getString("emailName", "");
+        if (!header.equals("")) {
+            TextView tv = findViewById(R.id.textView7);
+            tv.setText(header);
+        }
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    public void signUp(View view) {
+        Intent intent = new Intent(getApplicationContext(), SignUp.class);
+        startActivity(intent);
+    }
+
+    public void login(View view) {
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+    }
+
+    public void deleteDatabase(View view) {
+        loginViewModel.deleteAllData();
     }
 
     class NavigationListener implements NavigationView.OnNavigationItemSelectedListener {
