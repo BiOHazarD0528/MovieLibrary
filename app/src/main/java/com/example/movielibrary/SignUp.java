@@ -63,10 +63,5 @@ public class SignUp extends AppCompatActivity {
                 }
             });
         });
-
-
-        //String pw = test.getPassword();
-
-
     }
 }
