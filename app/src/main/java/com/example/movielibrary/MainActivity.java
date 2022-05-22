@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void deleteDatabase(View view) {
         loginViewModel.deleteAllData();
+        Toast.makeText(getApplicationContext(), "Database Cleared", Toast.LENGTH_SHORT).show();
     }
 
     class NavigationListener implements NavigationView.OnNavigationItemSelectedListener {
