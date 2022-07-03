@@ -80,14 +80,15 @@ public class MainActivity extends AppCompatActivity {
 //            user.setText(emailName);
 //        }
 
-        // myConstraintLayout = findViewById(R.id.constraintLayout);
+        myConstraintLayout = findViewById(R.id.constraintLayout);
+        View coordinatorLayout = findViewById(R.id.coordinatorLayout);
         View drawerLayout = findViewById(R.id.drawerlayout);
         myFrame = findViewById(R.id.frameLayout);
 
         gestureDetector = new GestureDetector(this, new MyGestureDetector());
         scaleGestureDetector = new ScaleGestureDetector(this, new MyScaleGestureDetector());
 
-        drawerLayout.setOnTouchListener(new View.OnTouchListener() {
+        coordinatorLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 scaleGestureDetector.onTouchEvent(event);
